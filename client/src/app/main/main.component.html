@@ -1,38 +1,46 @@
 <app-settings [mainAviaries]="settingAviaries" (changed)="onSettingAviariesChanged($event)">
 </app-settings>
 
-<div cdkDropListGroup>
+<table class="main-table">
+	<tr>			
+		<div cdkDropListGroup>
+			<td class="aviary-cell">
+			  <div class="aviaries-container">
+					<div *ngFor="let aviary of aviaries" class="aviary-container">  
+						<div
+							cdkDropList			
+							[cdkDropListData]="aviary.animals"
+							class="aviary-list"
+							(cdkDropListDropped)="drop($event)">
+							<div class="animal-box" *ngFor="let animal of aviary.animals" cdkDrag>
+								<app-animal [animal]="animal" (closed)="onClosed($event)">
+								</app-animal>
+							</div>
+						</div>
+					</div>
+				</div>
+			</td>
 
-	<div *ngFor="let aviary of aviaries" class="aviary-container">  
-		<div
-			cdkDropList			
-			[cdkDropListData]="aviary.animals"
-			class="aviary-list"
-			(cdkDropListDropped)="drop($event)">
-			<div class="animal-box" *ngFor="let animal of aviary.animals" cdkDrag>
-				<app-animal [animal]="animal" (closed)="onClosed($event)">
-				</app-animal>
-			</div>
+			<td class="animals-cell">
+				<div class="animals-container">				
+					<div
+						cdkDropList
+						#animalsList="cdkDropList"
+						[cdkDropListData]="animals"
+						class="animal-list"
+						(cdkDropListDropped)="drop($event)">
+						<div class="animal-box" *ngFor="let animal of animals" cdkDrag>
+							<app-animal [animal]="animal" (closed)="onClosed($event)">
+							</app-animal>
+						</div>
+					</div>
+				</div>
+			</td>
 		</div>
-	</div>
+	</tr>
+</table>
 
-	<div class="animals-container">
-		
-		<div
-			cdkDropList
-			#animalsList="cdkDropList"
-			[cdkDropListData]="animals"
-			class="animal-list"
-			(cdkDropListDropped)="drop($event)">
-			<div class="animal-box" *ngFor="let animal of animals" cdkDrag>
-				<app-animal [animal]="animal" (closed)="onClosed($event)">
-				</app-animal>
-			</div>
-		</div>
-	</div>
-</div>
-
-<p>
+<p class="buttons">
 	<button mat-button (click)="generate()">Сгенерировать</button>
 	<button mat-button (click)="save()">Сохранить</button>
 	<button mat-button [routerLink]="['/animal-add']">Добавить</button>

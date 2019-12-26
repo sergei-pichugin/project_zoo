@@ -7,14 +7,14 @@ import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChange
 })
 export class SettingsComponent implements OnInit {
 	
-	@Input() mainAviaries: number;
-	@Output() changed = new EventEmitter<number>();
+  @Input() mainAviaries: number;
+  @Output() changed = new EventEmitter<number>();
 	
-	change(event) {
-		this.changed.emit(event);
-	}
+  change(event) {    
+    this.changed.emit(event);
+  }
 	
-	constructor() { }
+  constructor() { }
 
   ngOnInit() {
   }

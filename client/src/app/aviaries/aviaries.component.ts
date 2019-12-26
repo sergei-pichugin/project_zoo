@@ -3,20 +3,18 @@ import {CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag
 import { Animal } from '../animal';
 
 @Component({
-  selector: 'app-aviary',
-  templateUrl: './aviary.component.html',
-  styleUrls: ['./aviary.component.css']
+  selector: 'app-aviaries',
+  templateUrl: './aviaries.component.html',
+  styleUrls: ['./aviaries.component.css']
 })
-export class AviaryComponent implements OnInit {
+export class AviariesComponent implements OnInit {
 
 	constructor() {
 	}
 	
 	ngOnInit() {}
 
-  animals = [
-    {id: 14, name: 'Заяц', predator: false}
-  ];
+  animals = [];
 
   drop(event: CdkDragDrop<string[]>) {
 		console.log(event);

@@ -1,31 +1,38 @@
 import { Component, OnInit } from '@angular/core';
 import { AnimalService } from '../shared/animal/animal.service';
 import { PlanService } from '../shared/plan/plan.service';
+import { AviaryService } from '../shared/aviary/aviary.service';
 import {CdkDragDrop, moveItemInArray, transferArrayItem, CdkDropList} from '@angular/cdk/drag-drop';
 import { Animal } from '../animal';
 
 @Component({
   selector: 'app-main',
   templateUrl: './main.component.html',
-  styleUrls: ['./main.component.css']
+  styleUrls: ['./main.component.css'],
+  providers: [AviaryService]
 })
 export class MainComponent implements OnInit {
 
-	settingAviaries: number = 2;
 	animals: Array<any>;
 	aviaries: Array<any> = [{animals: []}, {animals: []}];
 	
-	onSettingAviariesChanged(event) {
-		this.settingAviaries = event.target.value;
-		this.aviaries = [];
-		for (let i = 0; i < this.settingAviaries; i++) {
-			this.aviaries.push({animals: []});
-		}
-		console.log('new main aviaries: ' + this.settingAviaries);
+	onAviariesChanged(event) {
+    console.log('aviaries before change: ' + this.aviaries);
+    let newAviariesNumber = event.target.value;
+    if (newAviariesNumber < 0 || newAviariesNumber == this.aviaries.length) {
+      
+    } else {
+      this.aviaryService
+      .changeAviaries(this.aviaries, newAviariesNumber)
+      .subscribe(data => {
+        this.aviaries = data;        
+      });
+    }
 	}  
 
   constructor(private animalService: AnimalService,
-							private planService: PlanService) { }
+							private planService: PlanService,
+              private aviaryService: AviaryService) { }
 
   ngOnInit() {
 		this.animalService.getAll().subscribe(data => {

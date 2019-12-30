@@ -13,7 +13,6 @@ import { AppComponent } from './app.component';
 import { AnimalComponent } from './animal/animal.component';
 import { SettingsComponent } from './settings/settings.component';
 import { MainComponent } from './main/main.component';
-import { AviaryComponent } from './aviary/aviary.component';
 import { AnimalEditComponent } from './animal-edit/animal-edit.component';
 
 @NgModule({
@@ -22,7 +21,6 @@ import { AnimalEditComponent } from './animal-edit/animal-edit.component';
     AnimalComponent,
     SettingsComponent,
     MainComponent,
-    AviaryComponent,
     AnimalEditComponent
   ],
   imports: [

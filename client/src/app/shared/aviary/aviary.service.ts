@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -9,18 +9,23 @@ export class AviaryService {
   constructor() { 
   }
   
-  changeAviaries(aviaries, newAviariesNumber) {    
+  changeAviaries(aviaries, newAviariesNumber) : Observable<any> {    
     if (newAviariesNumber > aviaries.length) {
-      return this.addEmptyAviaries(aviaries, newAviariesNumber);
+      return new Observable(subscriber => {
+        subscriber.next(this.addEmptyAviaries(aviaries, newAviariesNumber));
+      });
     }
     if (newAviariesNumber < aviaries.length) {
-      return this.removeEmptyAviaries(aviaries, newAviariesNumber);
+      return new Observable(subscriber => {
+        subscriber.next(this.removeEmptyAviaries(aviaries, newAviariesNumber));
+      });
     }
   }
   
   addEmptyAviaries(aviaries, newAviariesNumber) {
     let emptyAviariesNumber = newAviariesNumber - aviaries.length;
-    let newAviaries = aviaries;
+    let newAviaries = [];
+    this.copy(newAviaries, aviaries);
     for (let i = 0; i < emptyAviariesNumber; i++) {
       newAviaries.push({animals: []});
     }
@@ -28,7 +33,8 @@ export class AviaryService {
   }
   
   removeEmptyAviaries(aviaries, newAviariesNumber) {
-    let newAviaries = aviaries;
+    let newAviaries = [];
+    this.copy(newAviaries, aviaries);
     for (let i = 0; i < newAviaries.length; i++) {
       let av = newAviaries[i];
       if (this.isEmpty(av)) {
@@ -47,5 +53,15 @@ export class AviaryService {
       return true;
     }
     return false;
+  }
+  
+  copy(newAviaries, aviaries) {
+    if (!aviaries || !aviaries.length) {
+      return newAviaries;
+    }
+    aviaries.forEach(function(item) {
+      newAviaries.push(item);
+    });
+    return newAviaries;
   }
 }

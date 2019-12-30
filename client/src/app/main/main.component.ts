@@ -8,25 +8,29 @@ import { Animal } from '../animal';
 @Component({
   selector: 'app-main',
   templateUrl: './main.component.html',
-  styleUrls: ['./main.component.css'],
-  providers: [AviaryService]
+  styleUrls: ['./main.component.css']
 })
 export class MainComponent implements OnInit {
 
 	animals: Array<any>;
 	aviaries: Array<any> = [{animals: []}, {animals: []}];
+  readonly maxAviariesNumber = 1000;
 	
 	onAviariesChanged(event) {
-    console.log('aviaries before change: ' + this.aviaries);
     let newAviariesNumber = event.target.value;
-    if (newAviariesNumber < 0 || newAviariesNumber == this.aviaries.length) {
-      
+    if (newAviariesNumber < 0 || 
+        newAviariesNumber == this.aviaries.length || 
+        newAviariesNumber > this.maxAviariesNumber) {
+      event.target.value = this.aviaries.length;
     } else {
       this.aviaryService
       .changeAviaries(this.aviaries, newAviariesNumber)
       .subscribe(data => {
-        this.aviaries = data;        
-      });
+          this.aviaries = data;   
+          if (event.target.value != this.aviaries.length) {
+            event.target.value = this.aviaries.length;
+          }
+        });
     }
 	}  
 

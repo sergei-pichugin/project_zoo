@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { AnimalService } from '../shared/animal/animal.service';
 import { PlanService } from '../shared/plan/plan.service';
 import { AviaryService } from '../shared/aviary/aviary.service';
-import {CdkDragDrop, moveItemInArray, transferArrayItem, CdkDropList} from '@angular/cdk/drag-drop';
+import { CdkDragDrop, moveItemInArray, transferArrayItem, 
+         copyArrayItem, CdkDropList} from '@angular/cdk/drag-drop';
 import { Animal } from '../animal';
 
 @Component({
@@ -56,14 +57,23 @@ export class MainComponent implements OnInit {
 	}
 	
 	drop(event: CdkDragDrop<string[]>) {
-		console.log(event);
-    if (event.previousContainer === event.container) {
+		console.log(event);    
+    if (event.previousContainer === event.container) { // inside the same container - index changing
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
-    } else {
+    } else if (event.container.element.nativeElement
+                .classList.contains('animal-list')) {  // cannot drop from aviaries to free-animals
+      // do nothing          
+    } else if (event.previousContainer.element.nativeElement
+                .classList.contains('aviary-list')) {  // from one aviary to another - transfer
       transferArrayItem(event.previousContainer.data,
                         event.container.data,
                         event.previousIndex,
                         event.currentIndex);
+    } else {                                          // from free-animals to aviaries - copy
+      copyArrayItem(event.previousContainer.data,
+                    event.container.data,
+                    event.previousIndex,
+                    event.currentIndex);
     }
   }
 

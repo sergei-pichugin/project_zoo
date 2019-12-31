@@ -13,7 +13,7 @@
 							class="aviary-list"
 							(cdkDropListDropped)="drop($event)">
 							<div class="animal-box" *ngFor="let animal of aviary.animals" cdkDrag>
-								<app-animal [animal]="animal" (closed)="onClosed($event)">
+								<app-animal [animal]="animal" (closed)="onClosedFromAviary($event)">
 								</app-animal>
 							</div>
 						</div>
@@ -30,7 +30,7 @@
 						class="animal-list"
 						(cdkDropListDropped)="drop($event)">
 						<div class="animal-box" *ngFor="let animal of animals" cdkDrag>
-							<app-animal [animal]="animal" (closed)="onClosed($event)">
+							<app-animal [animal]="animal" (closed)="onClosedFromAnimals($event)">
 							</app-animal>
 						</div>
 					</div>

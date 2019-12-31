@@ -42,19 +42,33 @@ export class MainComponent implements OnInit {
   ngOnInit() {
 		this.animalService.getAll().subscribe(data => {
 			this.animals = data;
-		});
-		
+		});		
   }
 	
-	onClosed(animal: Animal) {
-		this.remove(animal.id);
+	onClosedFromAviary(animal) {
+		this.removeFromAviaries(animal.id);
 	}
+  
+  onClosedFromAnimals(animal) {
+    this.removeFromZoo(animal.id);
+  }
 	
-	remove(id: number) {
+	removeFromZoo(id: number) {
 		this.animalService.remove(id).subscribe(data => {
 			this.animals = data;
+      this.removeFromAviaries(id);
 		});
 	}
+  
+  removeFromAviaries(animalId: number) {
+    for (let i = 0; i < this.aviaries.length; i++) {
+      for (let j = 0; j < this.aviaries[i].animals.length; j++) {
+        if (this.aviaries[i].animals[j].id == animalId) {
+          this.aviaries[i].animals.splice(j, 1);
+        }
+      }
+    }
+  }
 	
 	drop(event: CdkDragDrop<string[]>) {
 		console.log(event);    
@@ -70,11 +84,26 @@ export class MainComponent implements OnInit {
                         event.previousIndex,
                         event.currentIndex);
     } else {                                          // from free-animals to aviaries - copy
-      copyArrayItem(event.previousContainer.data,
+      let animalId: number = event.previousContainer.data[event.previousIndex].id;
+      if (this.checkAviaryNewbie(animalId)) {
+        copyArrayItem(event.previousContainer.data,
                     event.container.data,
                     event.previousIndex,
                     event.currentIndex);
+      }      
     }
+  }
+  
+  // only one concrete animal for the zoo
+  checkAviaryNewbie(animalId: number) {
+    for (let i = 0; i < this.aviaries.length; i++) {
+      for (let j = 0; j < this.aviaries[i].animals.length; j++) {
+        if (this.aviaries[i].animals[j].id == animalId) {
+          return false;
+        }
+      }
+    }
+    return true;
   }
 
 	save() {

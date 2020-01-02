@@ -25,12 +25,12 @@ export class MainComponent implements OnInit {
       event.target.value = this.aviaries.length;
     } else {
       this.aviaryService
-      .changeAviaries(this.aviaries, newAviariesNumber)
-      .subscribe(data => {
-          this.aviaries = data;   
-          if (event.target.value != this.aviaries.length) {
-            event.target.value = this.aviaries.length;
-          }
+        .changeAviaries(this.aviaries, newAviariesNumber)
+        .subscribe(data => {
+            this.aviaries = data;   
+            if (event.target.value != this.aviaries.length) {
+              event.target.value = this.aviaries.length;
+            }
         });
     }
 	}  
@@ -70,41 +70,9 @@ export class MainComponent implements OnInit {
     }
   }
 	
-	drop(event: CdkDragDrop<string[]>) {
-		console.log(event);    
-    if (event.previousContainer === event.container) { // inside the same container - index changing
-      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
-    } else if (event.container.element.nativeElement
-                .classList.contains('animal-list')) {  // cannot drop from aviaries to free-animals
-      // do nothing          
-    } else if (event.previousContainer.element.nativeElement
-                .classList.contains('aviary-list')) {  // from one aviary to another - transfer
-      transferArrayItem(event.previousContainer.data,
-                        event.container.data,
-                        event.previousIndex,
-                        event.currentIndex);
-    } else {                                          // from free-animals to aviaries - copy
-      let animalId: number = event.previousContainer.data[event.previousIndex].id;
-      if (this.checkAviaryNewbie(animalId)) {
-        copyArrayItem(event.previousContainer.data,
-                    event.container.data,
-                    event.previousIndex,
-                    event.currentIndex);
-      }      
-    }
-  }
-  
-  // only one concrete animal for the zoo
-  checkAviaryNewbie(animalId: number) {
-    for (let i = 0; i < this.aviaries.length; i++) {
-      for (let j = 0; j < this.aviaries[i].animals.length; j++) {
-        if (this.aviaries[i].animals[j].id == animalId) {
-          return false;
-        }
-      }
-    }
-    return true;
-  }
+	drop(event: CdkDragDrop<Animal[]>) {
+    this.aviaryService.drop(event, this.aviaries);    
+  }  
 
 	save() {
 		console.log(this.aviaries);

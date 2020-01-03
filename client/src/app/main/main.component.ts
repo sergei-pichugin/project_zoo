@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AnimalService } from '../shared/animal/animal.service';
 import { PlanService } from '../shared/plan/plan.service';
 import { AviaryService } from '../shared/aviary/aviary.service';
@@ -13,11 +14,27 @@ import { Animal } from '../animal';
 })
 export class MainComponent implements OnInit {
 
-	animals: Array<any>;
-	aviaries: Array<any> = [{animals: []}, {animals: []}];
+  animals: Array<any>;
+  aviaries: Array<any> = [{animals: []}, {animals: []}];
   readonly maxAviariesNumber = 1000;
-	
-	onAviariesChanged(event) {
+  
+  constructor(private route: ActivatedRoute,
+              private router: Router,
+              private animalService: AnimalService,
+              private planService: PlanService,
+              private aviaryService: AviaryService) { }
+              
+  ngOnInit() {    
+    this.animalService.getAll().subscribe(data => {
+      this.animals = data;
+  });
+    if (history.aviaries) {
+      this.aviaries = history.aviaries;
+      history.aviaries = null;
+    }
+  }
+
+  onAviariesChanged(event) {
     let newAviariesNumber = event.target.value;
     if (newAviariesNumber < 0 || 
         newAviariesNumber == this.aviaries.length || 
@@ -33,32 +50,22 @@ export class MainComponent implements OnInit {
             }
         });
     }
-	}  
+  }   
 
-  constructor(private animalService: AnimalService,
-							private planService: PlanService,
-              private aviaryService: AviaryService) { }
-
-  ngOnInit() {
-		this.animalService.getAll().subscribe(data => {
-			this.animals = data;
-		});		
+  onClosedFromAviary(animal) {
+    this.removeFromAviaries(animal.id);
   }
-	
-	onClosedFromAviary(animal) {
-		this.removeFromAviaries(animal.id);
-	}
   
   onClosedFromAnimals(animal) {
     this.removeFromZoo(animal.id);
   }
-	
-	removeFromZoo(id: number) {
-		this.animalService.remove(id).subscribe(data => {
-			this.animals = data;
+
+  removeFromZoo(id: number) {
+      this.animalService.remove(id).subscribe(data => {
+      this.animals = data;
       this.removeFromAviaries(id);
-		});
-	}
+    });
+  }
   
   removeFromAviaries(animalId: number) {
     for (let i = 0; i < this.aviaries.length; i++) {
@@ -69,28 +76,33 @@ export class MainComponent implements OnInit {
       }
     }
   }
-	
-	drop(event: CdkDragDrop<Animal[]>) {
-    this.aviaryService.drop(event, this.aviaries);    
-  }  
 
-	save() {
-		console.log(this.aviaries);
-		this.planService.save(this.aviaries).subscribe(
-		data => {
-			alert('сохранён план распределения');
-			console.log(data);
-		});
-	}
-	
-	generate() {
-		console.log('sending request to generation');
-		this.planService.generate(this.aviaries.length).subscribe(data => {
-			console.log(data);
-			this.aviaries = [];
-			data.forEach(av => {
-				this.aviaries.push({animals: [av.firstAnimal, av.secondAnimal]});
-			});
-		});
-	}
+  drop(event: CdkDragDrop<Animal[]>) {
+    this.aviaryService.drop(event, this.aviaries);
+  }
+
+  save() {
+    console.log(this.aviaries);
+    this.planService.save(this.aviaries).subscribe(
+      data => {
+        alert('сохранён план распределения');
+        console.log(data);
+    });
+  }
+
+  generate() {
+    console.log('sending request to generation');
+    this.planService.generate(this.aviaries.length).subscribe(data => {
+      console.log(data);
+      this.aviaries = [];
+      data.forEach(av => {
+        this.aviaries.push({animals: [av.firstAnimal, av.secondAnimal]});
+      });
+    });
+  }
+  
+  addAnimal() {
+    history.aviaries = this.aviaries;
+    this.router.navigate(['/animal-add']);
+  }
 }

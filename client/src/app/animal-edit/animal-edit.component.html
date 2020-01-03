@@ -7,14 +7,14 @@
       <mat-form-field>
         <input matInput placeholder="Название" name="name" required [(ngModel)]="animal.name">
       </mat-form-field>
-			<mat-checkbox name="predator" [(ngModel)]="animal.predator">
-				Хищник?
-			</mat-checkbox>		
+      <mat-checkbox name="predator" [(ngModel)]="animal.predator">
+        Хищник?
+      </mat-checkbox>
     </mat-card-content>
     <mat-card-actions>
       <button mat-raised-button color="primary" type="submit"
               [disabled]="!animalForm.form.valid">Сохранить</button>
-      <a mat-button routerLink="/main">Назад</a>
+      <a mat-raised-button routerLink="/main">Назад</a>
     </mat-card-actions>    
   </form>
 </mat-card>

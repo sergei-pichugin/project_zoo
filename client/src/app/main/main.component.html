@@ -40,8 +40,8 @@
 	</tr>
 </table>
 
-<p class="buttons">
-	<button mat-button (click)="generate()">Сгенерировать</button>
-	<button mat-button (click)="save()">Сохранить</button>
-	<button mat-button [routerLink]="['/animal-add']">Добавить</button>
-</p>
+<div class="button-row">
+	<button mat-raised-button (click)="generate()">Сгенерировать</button>
+	<button mat-raised-button (click)="save()">Сохранить</button>
+	<button mat-raised-button (click)="addAnimal()">Добавить</button>
+</div>

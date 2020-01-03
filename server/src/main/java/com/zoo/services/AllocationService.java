@@ -49,16 +49,20 @@ public class AllocationService {
 					animalService.findById(aviaryIds.get(0)) : null;
 			Animal animal2 = aviaryIds.size() > 1 ? 
 					animalService.findById(aviaryIds.get(1)) : null;
+          
 			//сохраняем в вольере по алфавиту названий животных
-			if (animal1 != null && animal2 != null) {
-				if (animal2.getName().compareToIgnoreCase(animal1.getName()) < 0) {
-					aviary.setFirstAnimal(animal2);
-					aviary.setSecondAnimal(animal1);
-				}
-			} else {
-				aviary.setFirstAnimal(animal1);
-				aviary.setSecondAnimal(animal2);
-			}			
+      if (animal1 != null && animal2 != null) {
+        if (animal2.getName().compareToIgnoreCase(animal1.getName()) < 0) {
+          aviary.setFirstAnimal(animal2);
+          aviary.setSecondAnimal(animal1);
+        } else {
+          aviary.setFirstAnimal(animal1);
+          aviary.setSecondAnimal(animal2);
+        }
+      } else {
+        aviary.setFirstAnimal(animal1);
+        aviary.setSecondAnimal(animal2);
+      }      
 			aviary.setPlan(plan);
 			aviaryRepo.save(aviary);
 		}

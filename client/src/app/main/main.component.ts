@@ -27,8 +27,8 @@ export class MainComponent implements OnInit {
   ngOnInit() {    
     this.animalService.getAll().subscribe(data => {
       this.animals = data;
-  });
-    if (history.aviaries) {
+    });
+    if (history && history.aviaries) {
       this.aviaries = history.aviaries;
       history.aviaries = null;
     }

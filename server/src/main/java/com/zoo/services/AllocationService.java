@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.math.BigInteger;
+import javax.persistence.Tuple;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +17,6 @@ import com.zoo.data.AviaryRepository;
 import com.zoo.data.PlanRepository;
 import com.zoo.domain.Animal;
 import com.zoo.domain.Aviary;
-import com.zoo.domain.AviaryReport;
 import com.zoo.domain.Plan;
 
 @Service
@@ -72,11 +73,11 @@ public class AllocationService {
 	public ResponseEntity<List<Aviary>> generatePlan(int forAviaries) {
 		if (forAviaries < 1) return new ResponseEntity<>(null, HttpStatus.OK);
 		
-		Map<Long, Boolean> doneMap = generateMapAnimalsInAviaries();
+		Map<Long, Boolean> animalInAviaryMap = generateMapAnimalsInAviaries();
 		
-		List<AviaryReport> pairs = aviaryRepo.groupPairs();
+		List<Tuple> pairs = aviaryRepo.groupPairs();
 		
-		List<Aviary> aviaries = allocateByFrequency(pairs, doneMap, forAviaries);
+		List<Aviary> aviaries = allocateByFrequency(pairs, animalInAviaryMap, forAviaries);
 		
 		return new ResponseEntity<>(aviaries, HttpStatus.OK);
 	}	
@@ -94,33 +95,105 @@ public class AllocationService {
 	}
 	
 	private List<Aviary> allocateByFrequency(
-			List<AviaryReport> pairs, 
-			Map<Long, Boolean> doneMap,
-			int forAviaries) {
-		List<Aviary> list = new ArrayList<>(forAviaries);
-		int i;
-		for (i = 0; i < Math.min(forAviaries, pairs.size()); i++) {
+			List<Tuple> pairs, 
+			Map<Long, Boolean> animalInAviaryMap,
+			int aviariesCount) {
+		List<Aviary> aviariesList = new ArrayList<>(aviariesCount);
+		int filledAviariesCount = putPairs(pairs, animalInAviaryMap, aviariesList, aviariesCount);
+    int animalsInAviariesCount = 2 * filledAviariesCount;
+		
+    // all available aviaries are filled with pairs
+    if (aviariesCount == filledAviariesCount) return aviariesList;
+    
+    // not all the aviaries are filled, but no more free animals available
+    if (animalsInAviariesCount == animalInAviaryMap.size()) return aviariesList;
+    
+    // there are empty aviaries and free animals, 
+    // first of all let's allocate by a scheme: one free animal -> one free aviary)
+    int halfFilledAviariesCount = putOneByOne(animalInAviaryMap, aviariesList, 
+                                              aviariesCount-filledAviariesCount);
+    animalsInAviariesCount += halfFilledAviariesCount;
+                
+    // here all animals are allocated by aviaries (doubles or singles)
+    if (animalsInAviariesCount == animalInAviaryMap.size()) return aviariesList;
+    
+    // there are still free animals
+    int newFilledAviariesCount = fillHalfFilledAviaries(animalInAviaryMap, aviariesList,
+                                                    halfFilledAviariesCount);
+    filledAviariesCount += newFilledAviariesCount;
+    halfFilledAviariesCount -= newFilledAviariesCount;
+    animalsInAviariesCount += newFilledAviariesCount;
+    
+    System.out.println("Aviary animals: " + animalsInAviariesCount);
+		return aviariesList;
+	}
+  
+  private int putPairs(List<Tuple> pairs,
+                       Map<Long, Boolean> animalInAviaryMap, 
+                       List<Aviary> aviariesList, 
+                       int aviariesCount) {
+    int filledAviariesCount = 0;
+    for (int i = 0; i < Math.min(aviariesCount, pairs.size()); i++) {
 			Aviary aviary = new Aviary();
-			AviaryReport pair = pairs.get(i);
-			Long animalId1 = pair.getFirstAnimal(); doneMap.put(animalId1, true);
-			Long animalId2 = pair.getSecondAnimal(); doneMap.put(animalId2, true);
+			Tuple pair = pairs.get(i);  
+      
+			Long animalId1 = ((BigInteger)pair.get("firstAnimal")).longValue(); 
+      if (animalInAviaryMap.get(animalId1)) continue;      
+      
+			Long animalId2 = ((BigInteger)pair.get("secondAnimal")).longValue();
+      if (animalInAviaryMap.get(animalId2)) continue;
+      
+      animalInAviaryMap.put(animalId1, true); 
+      animalInAviaryMap.put(animalId2, true);
+      
 			Animal animal1 = animalService.findById(animalId1);
 			Animal animal2 = animalService.findById(animalId2);
 			aviary.setFirstAnimal(animal1);
 			aviary.setSecondAnimal(animal2);
-			list.add(aviary);
+			aviariesList.add(aviary);
+      filledAviariesCount++;
 		}
-		//одиночные вольеры
-		for (Long id: doneMap.keySet()) {
-			if (i < forAviaries && !doneMap.get(id)) {
+    return filledAviariesCount;
+  }
+  
+  private int putOneByOne(Map<Long, Boolean> animalInAviaryMap, 
+                          List<Aviary> aviariesList, 
+                          int aviariesAvailableCount) {
+    int halfFilledAviariesCount = 0;   
+    for (Long id: animalInAviaryMap.keySet()) {
+			if (halfFilledAviariesCount < aviariesAvailableCount && !animalInAviaryMap.get(id)) {
 				Aviary aviary = new Aviary();
-				Long animalId1 = id; doneMap.put(animalId1, true);
+				Long animalId1 = id; 
+        animalInAviaryMap.put(animalId1, true);
 				Animal animal1 = animalService.findById(animalId1);
 				aviary.setFirstAnimal(animal1);
-				list.add(aviary);
+				aviariesList.add(aviary);
+        halfFilledAviariesCount++;
 			}
 		}
-		return list;
-	}
-
+    return halfFilledAviariesCount;
+  }
+  
+  private int fillHalfFilledAviaries(Map<Long, Boolean> animalInAviaryMap, 
+                                 List<Aviary> aviariesList,
+                                 int halfFilledAviariesCount) {
+    int newFilledAviariesCount = 0;
+    for (Long animalId: animalInAviaryMap.keySet()) {   
+      
+			if (!animalInAviaryMap.get(animalId)) {
+        Animal animal = animalService.findById(animalId);
+        for (int i = aviariesList.size() - halfFilledAviariesCount; 
+                  i < aviariesList.size(); i++) {
+          Aviary aviary = aviariesList.get(i);
+          Animal second = aviary.getSecondAnimal();
+          if (second == null && 
+              aviary.getFirstAnimal().isPredator() == animal.isPredator()) {
+            aviary.setSecondAnimal(animal);
+            newFilledAviariesCount++;
+          }
+        }				
+			}
+		}
+    return newFilledAviariesCount;
+  }
 }

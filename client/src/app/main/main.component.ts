@@ -28,7 +28,7 @@ export class MainComponent implements OnInit {
     this.animalService.getAll().subscribe(data => {
       this.animals = data;
     });
-    if (history && history.aviaries) {
+    if (history && history.hasOwnProperty('aviaries')) {
       this.aviaries = history.aviaries;
       history.aviaries = null;
     }
@@ -96,7 +96,9 @@ export class MainComponent implements OnInit {
       console.log(data);
       this.aviaries = [];
       data.forEach(av => {
-        this.aviaries.push({animals: [av.firstAnimal, av.secondAnimal]});
+        av.secondAnimal ?
+        this.aviaries.push({animals: [av.firstAnimal, av.secondAnimal]}) :
+        this.aviaries.push({animals: [av.firstAnimal]});
       });
     });
   }

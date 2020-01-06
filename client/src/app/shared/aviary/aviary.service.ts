@@ -9,7 +9,17 @@ import { Animal } from '../../animal';
 })
 export class AviaryService {
 
+  _aviaryBuffer: Array<any> = [{animals: []}, {animals: []}];
+  
   public constructor() { 
+  }
+  
+  public setAviaryBuffer(aviaryBuffer: Array<any>) {
+    this._aviaryBuffer = aviaryBuffer;
+  }
+  
+  public getAviaryBuffer() : Array<any> {
+    return this._aviaryBuffer;
   }
   
   public changeAviaries(aviaries, newAviariesNumber) : Observable<any> {    

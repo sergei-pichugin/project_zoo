@@ -17,9 +17,8 @@ export class AnimalEditComponent implements OnInit {
   constructor(private route: ActivatedRoute,
 							private router: Router,
 							private animalService: AnimalService) { }
-
-  ngOnInit() {
-  }
+  
+  ngOnInit() { }
 	
 	goToList() {
 		this.router.navigate(['/main']);

@@ -15,7 +15,7 @@ import { Animal } from '../animal';
 export class MainComponent implements OnInit {
 
   animals: Array<any>;
-  aviaries: Array<any> = [{animals: []}, {animals: []}];
+  aviaries: Array<any>;
   readonly maxAviariesNumber = 1000;
   
   constructor(private route: ActivatedRoute,
@@ -28,10 +28,7 @@ export class MainComponent implements OnInit {
     this.animalService.getAll().subscribe(data => {
       this.animals = data;
     });
-    if (history && history.hasOwnProperty('aviaries')) {
-      this.aviaries = history.aviaries;
-      history.aviaries = null;
-    }
+    this.aviaries = this.aviaryService.getAviaryBuffer();
   }
 
   onAviariesChanged(event) {
@@ -104,7 +101,7 @@ export class MainComponent implements OnInit {
   }
   
   addAnimal() {
-    history.aviaries = this.aviaries;
+    this.aviaryService.setAviaryBuffer(this.aviaries);
     this.router.navigate(['/animal-add']);
   }
 }

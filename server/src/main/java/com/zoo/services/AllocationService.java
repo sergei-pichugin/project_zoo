@@ -3,7 +3,6 @@ package com.zoo.services;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.math.BigInteger;
@@ -84,7 +83,7 @@ public class AllocationService {
 
 	//метод для формирования map, где каждому активному животному сопоставляется
 	//false-признак, что оно пока не в вольере
-	private Map<Long, Boolean> generateMapAnimalsInAviaries() {
+	public Map<Long, Boolean> generateMapAnimalsInAviaries() {
 		Iterable<Animal> activeAnimals = animalService.findActiveAnimals();
 		if (activeAnimals == null) return null;
 		Map<Long, Boolean> doneMap = new HashMap<>();
@@ -94,7 +93,7 @@ public class AllocationService {
 		return doneMap;
 	}
 	
-	private List<Aviary> allocateByFrequency(
+	public List<Aviary> allocateByFrequency(
 			List<Tuple> pairs, 
 			Map<Long, Boolean> animalInAviaryMap,
 			int aviariesCount) {
@@ -128,7 +127,7 @@ public class AllocationService {
 		return aviariesList;
 	}
   
-  private int putPairs(List<Tuple> pairs,
+  public int putPairs(List<Tuple> pairs,
                        Map<Long, Boolean> animalInAviaryMap, 
                        List<Aviary> aviariesList, 
                        int aviariesCount) {
@@ -156,7 +155,7 @@ public class AllocationService {
     return filledAviariesCount;
   }
   
-  private int putOneByOne(Map<Long, Boolean> animalInAviaryMap, 
+  public int putOneByOne(Map<Long, Boolean> animalInAviaryMap, 
                           List<Aviary> aviariesList, 
                           int aviariesAvailableCount) {
     int halfFilledAviariesCount = 0;   
@@ -174,7 +173,7 @@ public class AllocationService {
     return halfFilledAviariesCount;
   }
   
-  private int fillHalfFilledAviaries(Map<Long, Boolean> animalInAviaryMap, 
+  public int fillHalfFilledAviaries(Map<Long, Boolean> animalInAviaryMap, 
                                  List<Aviary> aviariesList,
                                  int halfFilledAviariesCount) {
     int newFilledAviariesCount = 0;

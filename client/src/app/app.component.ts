@@ -1,12 +1,18 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { AviariesCountComponent } from './aviaries-count/aviaries-count.component';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  imports: [AviariesCountComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
 export class AppComponent {
   title = 'client';
+  avcount: number|null = null;
+
+  onAvcountChanged(newavcount: number|null) {
+    this.avcount = newavcount;
+    console.log('avcount changed to ' + this.avcount);
+  }
 }

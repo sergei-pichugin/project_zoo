@@ -1,0 +1,47 @@
+<app-settings [mainAviaries]="aviaries.length" (changed)="onAviariesChanged($event)">
+</app-settings>
+
+<table class="main-table">
+	<tr>			
+		<div cdkDropListGroup>
+			<td class="aviary-cell">
+			  <div class="aviaries-container">
+					<div *ngFor="let aviary of aviaries" class="aviary-container">  
+						<div
+							cdkDropList			
+							[cdkDropListData]="aviary.animals"
+							class="aviary-list"
+							(cdkDropListDropped)="drop($event)">
+							<div class="animal-box" *ngFor="let animal of aviary.animals" cdkDrag>
+								<app-animal [animal]="animal" (closed)="onClosedFromAviary($event)">
+								</app-animal>
+							</div>
+						</div>
+					</div>
+				</div>
+			</td>
+
+			<td class="animals-cell">
+				<div class="animals-container">				
+					<div
+						cdkDropList
+						#animalsList="cdkDropList"
+						[cdkDropListData]="animals"
+						class="animal-list"
+						(cdkDropListDropped)="drop($event)">
+						<div class="animal-box" *ngFor="let animal of animals" cdkDrag>
+							<app-animal [animal]="animal" (closed)="onClosedFromAnimals($event)">
+							</app-animal>
+						</div>
+					</div>
+				</div>
+			</td>
+		</div>
+	</tr>
+</table>
+
+<div class="button-row">
+	<button mat-raised-button (click)="generate()">Сгенерировать</button>
+	<button mat-raised-button (click)="save()">Сохранить</button>
+	<button mat-raised-button (click)="addAnimal()">Добавить</button>
+</div>

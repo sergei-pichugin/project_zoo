@@ -1,0 +1,12 @@
+.animal {
+	padding: 2px;
+	height: 30px;
+}
+
+.predator {
+	color: red;
+}
+
+.veggie {
+	color: green;
+}

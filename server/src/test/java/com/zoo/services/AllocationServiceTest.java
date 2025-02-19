@@ -38,7 +38,7 @@ class AllocationServiceTest {
 	@Test
 	void testGeneratePlan_returnNoHeadersOkForZeroAviaries() {
 		ResponseEntity<List<Aviary>> resEntity = allocationService.generatePlan(0);
-		assertEquals(HttpStatus.OK, resEntity.getStatusCode().OK);
+		assertEquals(HttpStatus.OK, resEntity.getStatusCode());
 		assertEquals(0, resEntity.getHeaders().size());
 	}
 	

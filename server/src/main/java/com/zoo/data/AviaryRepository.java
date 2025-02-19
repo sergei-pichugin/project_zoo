@@ -1,7 +1,7 @@
 package com.zoo.data;
 
 import java.util.List;
-import javax.persistence.Tuple;
+import jakarta.persistence.Tuple;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;

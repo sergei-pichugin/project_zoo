@@ -17,7 +17,7 @@ public interface AviaryRepository extends CrudRepository<Aviary, Long>  {
 			+ "count(*) as frequency "
 			+ "from aviary "
 			+ "group by firstAnimal, secondAnimal "
-      + "having first_animal is not null and second_animal is not null "
+      		+ "having first_animal is not null and second_animal is not null "
 			+ "order by frequency desc ", nativeQuery=true)
 	List<Tuple> groupPairs();
 

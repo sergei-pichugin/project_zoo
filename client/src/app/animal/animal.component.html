@@ -1,11 +1,11 @@
-<mat-card class="animal">
+<div class="animal">
 	<span [ngClass]="{
 		'predator': animal?.predator,
 		'veggie': !animal?.predator
 		}">
 		{{animal?.name}}
 	</span>
-	<button mat-icon-button (click)="close()">
-		<mat-icon>close</mat-icon>
-	</button>
-</mat-card>
+	<span class="span-close">
+		<mat-icon class="mi" (click)="close()">close</mat-icon>
+	</span>
+</div>

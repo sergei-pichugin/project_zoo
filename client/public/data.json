@@ -1,0 +1,21 @@
+[{
+    "id": 10,
+    "name": "Лев",
+    "predator": true
+},{
+    "id": 20,
+    "name": "Корова",
+    "predator": false
+},{
+    "id": 30,
+    "name": "Волк",
+    "predator": true
+},{
+    "id": 40,
+    "name": "Антилопа",
+    "predator": false
+},{
+    "id": 50,
+    "name": "Медведь",
+    "predator": true
+}]

@@ -8,13 +8,13 @@ import { Observable, EMPTY } from 'rxjs';
 export class AnimalService {
 
   public API = '//localhost:8080';
-	public ANIMAL_API = this.API + '/animals';
+  public ANIMAL_API = this.API + '/animals';
 
   constructor(private http: HttpClient) { }
 	
-	//getAll(): Observable<any> {
-	//	return this.http.get('animals.json');
-	//}
+	// getAll(): Observable<any> {
+	// 	return this.http.get('data.json');
+	// }
 	
 	getAll(): Observable<any> {
 		return this.http.get(this.ANIMAL_API);

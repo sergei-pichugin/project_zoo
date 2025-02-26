@@ -1,18 +1,21 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { CdkDragDrop, CdkDropList } from '@angular/cdk/drag-drop';
+import { CdkDrag, CdkDragDrop, CdkDropList, CdkDropListGroup, moveItemInArray, transferArrayItem, copyArrayItem } from '@angular/cdk/drag-drop';
 import { Animal } from '../animal';
 import { AnimalService } from '../services/animal/animal.service';
 import { PlanService } from '../services/plan/plan.service';
 import { AviaryService } from '../services/aviary/aviary.service';
 import { SettingsComponent } from '../settings/settings.component';
 import { AnimalComponent } from '../animal/animal.component';
+import {MatButtonModule} from '@angular/material/button';
 import {NgFor} from "@angular/common";
 import { HttpClientModule} from "@angular/common/http";
+import { MatCardModule } from '@angular/material/card';
 
 @Component({
   selector: 'app-main',
-  imports: [SettingsComponent, CdkDropList, AnimalComponent, NgFor, HttpClientModule],
+  imports: [SettingsComponent, CdkDrag, CdkDropList, CdkDropListGroup, AnimalComponent, NgFor, 
+    MatButtonModule, MatCardModule, HttpClientModule],
   templateUrl: './main.component.html',
   styleUrl: './main.component.css',
   providers: [AnimalService, PlanService, AviaryService]
@@ -32,6 +35,7 @@ export class MainComponent implements OnInit {
       this.animals = data;
     });
     this.aviaries = this.aviaryService.getAviaryBuffer();
+    console.log(this.aviaries);
   }
 
   onAviariesChanged(event: Event) {

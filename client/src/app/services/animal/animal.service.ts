@@ -1,19 +1,20 @@
-import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Injectable } from '@angular/core';
+import { Observable, EMPTY } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AnimalService {
-	public API = '//localhost:8080';
-	public ANIMAL_API = this.API + '/animals';
+
+  public API = '//localhost:8080';
+  public ANIMAL_API = this.API + '/animals';
 
   constructor(private http: HttpClient) { }
 	
-	//getAll(): Observable<any> {
-	//	return this.http.get('animals.json');
-	//}
+	// getAll(): Observable<any> {
+	// 	return this.http.get('data.json');
+	// }
 	
 	getAll(): Observable<any> {
 		return this.http.get(this.ANIMAL_API);
@@ -21,17 +22,16 @@ export class AnimalService {
 	
 	save(animal: any): Observable<any> {
 		console.log('service saves');
-		let result: Observable<Object>;
-		if (!animal.name) return null;
+		if (!animal.name) return EMPTY;
 		animal.name = animal.name.trim();
-		if (animal.name.length < 2) return null;
+		if (animal.name.length < 2) return EMPTY;
 		animal.name = animal.name.substr(0, 1).toUpperCase() + 
 			animal.name.substr(1).toLowerCase();
-		result = this.http.post(this.ANIMAL_API, animal);
-		return result;
+		return this.http.post(this.ANIMAL_API, animal);
 	}
 	
 	remove(id: number): Observable<any> {
 		return this.http.get(this.ANIMAL_API + '/' + id);
 	}
 }
+

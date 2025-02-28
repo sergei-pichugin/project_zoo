@@ -1,23 +1,24 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { NgClass } from "@angular/common";
+
+import {MatCardModule} from '@angular/material/card';
+import {MatIconModule} from '@angular/material/icon';
+
 import { Animal } from '../animal';
+
 
 @Component({
   selector: 'app-animal',
+  imports: [NgClass, MatCardModule, MatIconModule],
   templateUrl: './animal.component.html',
-  styleUrls: ['./animal.component.css']
+  styleUrl: './animal.component.css'
 })
-export class AnimalComponent implements OnInit {
+export class AnimalComponent {
 
-	@Input() animal: Animal;
+  @Input() animal: Animal|null = null;
 	@Output() closed = new EventEmitter<any>();
 	
-  constructor() { }
-
-  ngOnInit() {
-  }
-	
-	close() {
+  close() {
 		this.closed.emit(this.animal);
 	}
-
 }

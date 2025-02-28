@@ -1,22 +1,17 @@
-import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'app-settings',
   templateUrl: './settings.component.html',
   styleUrls: ['./settings.component.css']
 })
-export class SettingsComponent implements OnInit {
+export class SettingsComponent {
 	
-  @Input() mainAviaries: number;
-  @Output() changed = new EventEmitter<number>();
+  @Input() mainAviaries: number|null = null;
+  @Output() changed = new EventEmitter<Event>();
 	
-  change(event) {    
+  change(event: Event) {
     this.changed.emit(event);
-  }
-	
-  constructor() { }
-
-  ngOnInit() {
   }
 
 }

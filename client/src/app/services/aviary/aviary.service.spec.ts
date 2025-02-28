@@ -3,10 +3,14 @@ import { TestBed } from '@angular/core/testing';
 import { AviaryService } from './aviary.service';
 
 describe('AviaryService', () => {
-  beforeEach(() => TestBed.configureTestingModule({}));
+  let service: AviaryService;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({});
+    service = TestBed.inject(AviaryService);
+  });
 
   it('should be created', () => {
-    const service: AviaryService = TestBed.get(AviaryService);
     expect(service).toBeTruthy();
   });
 });

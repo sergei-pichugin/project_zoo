@@ -1,5 +1,8 @@
 export class Animal {
-	id: number;
-	name: string;
-	predator: boolean;
+	
+	constructor(public id: number, 
+		public name: string, 
+		public predator: boolean)
+	{ }
+
 }

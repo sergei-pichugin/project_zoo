@@ -1,64 +1,75 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { AnimalService } from '../shared/animal/animal.service';
-import { PlanService } from '../shared/plan/plan.service';
-import { AviaryService } from '../shared/aviary/aviary.service';
-import { CdkDragDrop, moveItemInArray, transferArrayItem, 
-         copyArrayItem, CdkDropList} from '@angular/cdk/drag-drop';
+import { Router } from '@angular/router';
+import { CdkDrag, CdkDragDrop, CdkDropList, CdkDropListGroup, moveItemInArray, transferArrayItem, copyArrayItem } from '@angular/cdk/drag-drop';
 import { Animal } from '../animal';
+import { AnimalService } from '../services/animal/animal.service';
+import { PlanService } from '../services/plan/plan.service';
+import { AviaryService } from '../services/aviary/aviary.service';
+import { SettingsComponent } from '../settings/settings.component';
+import { AnimalComponent } from '../animal/animal.component';
+import {MatButtonModule} from '@angular/material/button';
+import {NgFor} from "@angular/common";
+import { HttpClientModule} from "@angular/common/http";
+import { MatCardModule } from '@angular/material/card';
 
 @Component({
   selector: 'app-main',
+  imports: [SettingsComponent, CdkDrag, CdkDropList, CdkDropListGroup, AnimalComponent, NgFor, 
+    MatButtonModule, MatCardModule, HttpClientModule],
   templateUrl: './main.component.html',
-  styleUrls: ['./main.component.css']
+  styleUrl: './main.component.css',
+  providers: [AnimalService, PlanService, AviaryService]
 })
 export class MainComponent implements OnInit {
-
-  animals: Array<any>;
-  aviaries: Array<any>;
+  animals: Array<any> = [];
+  aviaries: Array<any> = [];
   readonly maxAviariesNumber = 1000;
   
-  constructor(private route: ActivatedRoute,
-              private router: Router,
+  constructor(private router: Router,
               private animalService: AnimalService,
               private planService: PlanService,
               private aviaryService: AviaryService) { }
               
   ngOnInit() {    
-    this.animalService.getAll().subscribe(data => {
+    this.animalService.getAll().subscribe((data: any[]) => {
       this.animals = data;
     });
     this.aviaries = this.aviaryService.getAviaryBuffer();
+    console.log(this.aviaries);
   }
 
-  onAviariesChanged(event) {
-    let newAviariesNumber = event.target.value;
+  onAviariesChanged(event: Event) {
+    let input: HTMLInputElement = event.target as HTMLInputElement;
+    let newAviariesNumber = +input.value;
     if (newAviariesNumber < 0 || 
         newAviariesNumber == this.aviaries.length || 
         newAviariesNumber > this.maxAviariesNumber) {
-      event.target.value = this.aviaries.length;
+      input.value = ""+this.aviaries.length;
     } else {
       this.aviaryService
         .changeAviaries(this.aviaries, newAviariesNumber)
-        .subscribe(data => {
-            this.aviaries = data;   
-            if (event.target.value != this.aviaries.length) {
-              event.target.value = this.aviaries.length;
+        .subscribe({
+          next:(data: any) => { 
+            this.aviaries = data; 
+            if (+input.value != this.aviaries.length) {
+              input.value = ""+this.aviaries.length;
             }
+          },
+          error: error => console.log(error)
         });
     }
   }   
 
-  onClosedFromAviary(animal) {
+  onClosedFromAviary(animal: Animal) {
     this.removeFromAviaries(animal.id);
   }
   
-  onClosedFromAnimals(animal) {
+  onClosedFromAnimals(animal: Animal) {
     this.removeFromZoo(animal.id);
   }
 
   removeFromZoo(id: number) {
-      this.animalService.remove(id).subscribe(data => {
+      this.animalService.remove(id).subscribe((data: any[]) => {
       this.animals = data;
       this.removeFromAviaries(id);
     });
@@ -81,7 +92,7 @@ export class MainComponent implements OnInit {
   save() {
     console.log(this.aviaries);
     this.planService.save(this.aviaries).subscribe(
-      data => {
+      (data: any) => {
         alert('сохранён план распределения');
         console.log(data);
     });
@@ -89,7 +100,7 @@ export class MainComponent implements OnInit {
 
   generate() {
     console.log('sending request to generation');
-    this.planService.generate(this.aviaries.length).subscribe(data => {
+    this.planService.generate(this.aviaries.length).subscribe((data: any[]) => {
       console.log(data);
       this.aviaries = [];
       data.forEach(av => {

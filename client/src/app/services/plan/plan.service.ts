@@ -6,14 +6,14 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class PlanService {
-	public API = '//localhost:8080';
+
+  public API = '//localhost:8080';
 	public ALLOCATION_API = this.API + '/allocation';
 	
   constructor(private http: HttpClient) { }
 	
 	save(aviaries: any): Observable<any> {
 		console.log('plan service saves');
-		let result: Observable<Object>;
 		let idsByAviaries = [];
 		for (let i = 0; i < aviaries.length; i++) {
 			let aviaryIds = [];
@@ -23,11 +23,11 @@ export class PlanService {
 			idsByAviaries.push(aviaryIds);
 		}		
 		console.log(idsByAviaries);
-		result = this.http.post(this.ALLOCATION_API, idsByAviaries);
-		return result;
+		return this.http.post(this.ALLOCATION_API, idsByAviaries);
 	}
 	
 	generate(forAviaries: number): Observable<any> {
 		return this.http.get(this.ALLOCATION_API + '/' + forAviaries);
 	}
 }
+

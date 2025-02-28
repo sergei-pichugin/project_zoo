@@ -1,6 +1,5 @@
 <form>
-	<mat-form-field>
-		<input matInput type="number" [value]="mainAviaries" (change)="change($event)"
-					placeholder="Количество вольеров:">
-	</mat-form-field>
+    <label for="mainAviaries">Количество вольеров:</label><br>
+	<input type="number" id="mainAviaries" name="mainAviaries"
+        [value]="mainAviaries" (change)="change($event)">
 </form>

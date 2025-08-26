@@ -34,7 +34,7 @@ export class AnimalEditComponent {
 		this.animalService.save(form)
 			.subscribe({
 				next:() => { this.goToList(); },
-				error: error => console.log(error)
+				error: (error: any) => console.log(error)
 			});
 	}
 

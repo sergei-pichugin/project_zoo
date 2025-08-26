@@ -78,12 +78,12 @@ export class AviaryService {
   
   public changeAviaries(aviaries: any[], newAviariesNumber: number) {    
     if (newAviariesNumber > aviaries.length) {
-      return new Observable(subscriber => {
+      return new Observable((subscriber: { next: (arg0: { animals: never[]; }[]) => void; }) => {
         subscriber.next(this.addEmptyAviaries(aviaries, newAviariesNumber));
       });
     }
     if (newAviariesNumber < aviaries.length) {
-      return new Observable(subscriber => {
+      return new Observable((subscriber: { next: (arg0: any[]) => void; }) => {
         subscriber.next(this.removeEmptyAviaries(aviaries, newAviariesNumber));
       });
     }

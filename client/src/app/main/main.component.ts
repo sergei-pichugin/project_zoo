@@ -55,7 +55,7 @@ export class MainComponent implements OnInit {
               input.value = ""+this.aviaries.length;
             }
           },
-          error: error => console.log(error)
+          error: (error: any) => console.log(error)
         });
     }
   }   

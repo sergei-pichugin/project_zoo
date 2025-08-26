@@ -12,5 +12,6 @@
 ## Запуск client
 
 1. Установка Nodejs для работы с Angular, если нет. https://nodejs.org/
-2. Используя терминал, или Visual studio code, или аналогичную последней среду для разработки запустить команду ng serve. В браузере результат по адресу `http://localhost:4200/`
+2. Из client выполнить npm install.
+3. Из client выполнить ng serve. В браузере результат по адресу `http://localhost:4200/`
 
